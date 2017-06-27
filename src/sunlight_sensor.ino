@@ -18,7 +18,7 @@
 #include <Adafruit_MQTT_Client.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include <Adafruit_ASFCore.h>
+#include <Adafruit_ASFcore.h>
 #include <WiFi101.h>
 
 #include "config.h" // See comment in "sample-config.h"
