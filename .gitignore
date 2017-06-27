@@ -1,0 +1,6 @@
+.pioenvs
+.piolibdeps
+.vscode
+
+# Avoid checking in real config values
+src/config.h
