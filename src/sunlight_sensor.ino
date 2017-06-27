@@ -62,7 +62,11 @@ const char MQTT_CLIENTID[] PROGMEM = __TIME__ AIO_USERNAME;
 const char MQTT_USERNAME[] PROGMEM = AIO_USERNAME;
 const char MQTT_PASSWORD[] PROGMEM = AIO_KEY;
 
+#ifdef AUTHENTICATED_MQTT
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, AIO_SERVERPORT, MQTT_CLIENTID, MQTT_USERNAME, MQTT_PASSWORD);
+#else
+Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, AIO_SERVERPORT, MQTT_CLIENTID, "", "");
+#endif
 Adafruit_MQTT_Publish lightSensorFeed = Adafruit_MQTT_Publish(&mqtt, LIGHT_SENSOR_FEED);
 Adafruit_MQTT_Publish lightSensorBatteryFeed = Adafruit_MQTT_Publish(&mqtt, LIGHT_SENSOR_BATTERY_FEED);
 Adafruit_MQTT_Publish lightSensorResetFeed = Adafruit_MQTT_Publish(&mqtt, LIGHT_SENSOR_RESET_FEED);
@@ -149,8 +153,19 @@ void loop()
 
 	drawData(rawValue, buttonA, buttonB, buttonC, measuredvbat);
 
-	lightSensorFeed.publish(RawToLux(rawValue));
-	lightSensorBatteryFeed.publish(measuredvbat);
+	{
+		// Work around bad sprintf function
+		String luxValue;
+		luxValue += ((double)RawToLux(rawValue));
+		lightSensorFeed.publish(luxValue.c_str());
+	}
+
+	{
+		// Work around bad sprintf function
+		String batValue;
+		batValue += (measuredvbat);
+		lightSensorBatteryFeed.publish(batValue.c_str());
+	}
 
 	Watchdog.reset(); // make sure device stays alive
 
@@ -238,6 +253,9 @@ void MQTT_connect() {
 		display.display();
 		mqtt.disconnect();
 		delay(5000);  // wait 5 seconds
+
+		display.clearDisplay();
+		display.setCursor(0, 0);
 	}
 
 	Watchdog.reset(); // make sure device stays alive

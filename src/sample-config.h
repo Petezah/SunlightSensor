@@ -10,3 +10,6 @@
 #define AIO_SERVERPORT	1883
 #define AIO_USERNAME    "MY_ADAFRUIT_IO_USERNAME"
 #define AIO_KEY         "MY_ADAFRUIT_IO_API_KEY"
+
+// Comment out to authenticate with your user/pass
+//#define AUTHENTICATED_MQTT
