@@ -12,7 +12,7 @@
 #
 # * User Guide for `platformio ci` command
 #   < http://docs.platformio.org/page/userguide/cmd_ci.html >
-#
+# 
 
 language: python
 python:
