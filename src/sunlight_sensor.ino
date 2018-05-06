@@ -170,7 +170,7 @@ void loop()
 	Watchdog.reset(); // make sure device stays alive
 
 	display.display();
-	delay(5000); // wait 5s to send next messages
+	delay(8000); // wait 8s to send next messages
 }
 
 union ip_string
