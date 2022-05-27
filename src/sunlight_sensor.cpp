@@ -8,6 +8,10 @@
  Connect 3.3v to VCC and GND to GND
 */
 
+#include <Arduino.h>
+#include <stdlib.h>
+#include <math.h>
+
 //#include <Adafruit_WINC1500Udp.h>
 //#include <Adafruit_WINC1500SSLClient.h>
 //#include <Adafruit_WINC1500Server.h>
@@ -73,6 +77,11 @@ Adafruit_MQTT_Publish lightSensorResetFeed = Adafruit_MQTT_Publish(&mqtt, LIGHT_
 
 #define OLED_RESET 4
 Adafruit_SSD1306 display(OLED_RESET);
+
+void MQTT_connect();
+void drawData(int rawValue, int buttonA, int buttonB, int buttonC, float vbat);
+float RawToLux(int raw);
+const __FlashStringHelper* mqttConnectErrorString(int8_t code);
 
 void setup()
 {
@@ -273,50 +282,4 @@ const __FlashStringHelper* mqttConnectErrorString(int8_t code) {
 	case -1: return F("Connection failed");
 	default: return F("Unknown error");
 	}
-}
-
-char *dtostrf(double value, int width, unsigned int precision, char *result)
-{
-	int decpt, sign, reqd, pad;
-	const char *s, *e;
-	char *p;
-	s = fcvt(value, precision, &decpt, &sign);
-	if (precision == 0 && decpt == 0) {
-		s = (*s < '5') ? "0" : "1";
-		reqd = 1;
-	}
-	else {
-		reqd = strlen(s);
-		if (reqd > decpt) reqd++;
-		if (decpt == 0) reqd++;
-	}
-	if (sign) reqd++;
-	p = result;
-	e = p + reqd;
-	pad = width - reqd;
-	if (pad > 0) {
-		e += pad;
-		while (pad-- > 0) *p++ = ' ';
-	}
-	if (sign) *p++ = '-';
-	if (decpt <= 0 && precision > 0) {
-		*p++ = '0';
-		*p++ = '.';
-		e++;
-		while (decpt < 0) {
-			decpt++;
-			*p++ = '0';
-		}
-	}
-	while (p < e) {
-		*p++ = *s++;
-		if (p == e) break;
-		if (--decpt == 0) *p++ = '.';
-	}
-	if (width < 0) {
-		pad = (reqd + width) * -1;
-		while (pad-- > 0) *p++ = ' ';
-	}
-	*p = 0;
-	return result;
 }
